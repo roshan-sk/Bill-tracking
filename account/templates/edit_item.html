@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Item - Bill Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #444;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+        .update-button {
+            background-color: #007bff;
+        }
+        .delete-button {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <h2>Edit Item - Bill Tracker</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="name_of_item">Name of Item:</label>
+        <input type="text" id="name_of_item" name="name_of_item" value="{{ bill.name_of_item }}" required>
+        
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" value="{{ bill.description }}" required>
+        
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" value="{{ bill.price }}" required>
+        
+        <button type="submit" class="button update-button">Update</button>
+    </form>
+</body>
+</html>
