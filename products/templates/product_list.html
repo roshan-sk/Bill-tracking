@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Adjust gap as needed */
+            justify-content: space-between; /* Adjust alignment */
+        }
+        .product-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow: hidden;
+            width: 822px; /* Fixed width */
+            height: 1122px; /* Fixed height */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-image {
+            width: 100%;
+            height: auto;
+            max-height: 80%; /* 80% of card height */
+            display: block;
+            margin-bottom: 10px; /* Add margin */
+        }
+        .product-title {
+            font-size: 20px;
+            color: #333;
+            text-align: left;
+        }
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .product-actions a, .product-actions button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .product-actions a:hover, .product-actions button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product List</h1>
+    <a href="{% url 'product_create' %}" style="text-decoration: none;">
+        <button>Create New Product</button>
+    </a>
+    <div class="product-list">
+        {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-image">
+                <div class="product-title">
+                    <a href="{% url 'product_detail' product.pk %}">{{ product.title }}</a>
+                </div>
+                <div class="product-actions">
+                    <a href="{% url 'product_update' product.pk %}">Edit</a>
+                    <form action="{% url 'product_delete' product.pk %}" method="post" style="display:inline;" onsubmit="return confirmDelete('{{ product.title }}')">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function confirmDelete(productTitle) {
+            return confirm(`Are you sure you want to delete '${productTitle}'?`);
+        }
+    </script>
+</body>
+</html>

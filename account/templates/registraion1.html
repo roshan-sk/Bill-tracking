@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    }
+    
+    .container {
+      max-width: 700px;
+      width: 100%;
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+      text-align: center; /* Center align the contents */
+    }
+    
+    .title {
+      font-size: 25px;
+      font-weight: 500;
+      position: relative;
+      margin-bottom: 20px;
+      text-align: left; /* Align heading to left */
+      padding-left: 10px; /* Add padding for better appearance */
+    }
+    
+    .title::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0; /* Adjust top position to align above the line */
+      height: 100%; /* Extend height to match container */
+      width: 3px; /* Width of the line */
+      background-color: #9b59b6; /* Line color */
+    }
+    
+    .content form .user-details {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .input-box {
+      width: calc(50% - 10px);
+      margin-bottom: 15px;
+      text-align: left; /* Align text to left inside input-box */
+      display: inline-block; /* Ensure input boxes are in-line */
+    }
+    
+    .input-box.full-width {
+      width: 100%;
+    }
+    
+    .input-box .details {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    
+    .input-box input {
+      height: 45px;
+      width: 100%;
+      outline: none;
+      font-size: 16px;
+      border-radius: 5px;
+      padding-left: 15px;
+      border: 1px solid #ccc;
+      transition: all 0.3s ease;
+    }
+    
+    .input-box input:focus,
+    .input-box input:valid {
+      border-color: #9b59b6;
+    }
+    
+    .button {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .button input {
+      height: 45px;
+      width: 150px;
+      border-radius: 5px;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    }
+    
+    .button input:hover {
+      background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+    }
+    
+    .login-link {
+      margin-top: 15px;
+      text-align: center;
+      color: #007bff;
+    }
+    
+    .login-link a {
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .login-link a:hover {
+      color: #0056b3;
+    }
+    
+    @media(max-width: 584px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .input-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="title">Register</h2>
+        
+        <!-- Messages Area -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form id="registerForm" method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            
+            <div class="user-details">
+                <div class="input-box">
+                    <span class="details">Username</span>
+                    <input type="text" id="username" name="username" placeholder="Enter your Username" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Email</span>
+                    <input type="email" id="email" name="email" placeholder="Enter your Email" required>
+                </div>
+            </div>
+            
+            <div class="user-details">
+                <div class="input-box">
+                    <span class="details">First Name</span>
+                    <input type="text" id="firstName" name="firstName" placeholder="Enter your First Name" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Last Name</span>
+                    <input type="text" id="lastName" name="lastName" placeholder="Enter your Last Name" required>
+                </div>
+            </div>
+            
+            <div class="user-details">
+                <div class="input-box">
+                    <span class="details">Password</span>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <div class="input-box">
+                    <span class="details">Confirm Password</span>
+                    <input type="password" id="password2" name="password2" placeholder="Confirm your password" required>
+                </div>
+            </div>
+            
+            <div class="button">
+                <input type="submit" value="Register">
+            </div>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? <a class="signup-link" href="{% url 'login' %}">Login here.</a>
+        </div>
+    </div>
+  
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+      var password = document.getElementById('password').value;
+      var password2 = document.getElementById('password2').value;
+
+      if (password !== password2) {
+        alert('Passwords do not match');
+        event.preventDefault(); // Prevent form submission
+      }
+    });
+  </script>
+</body>
+</html>

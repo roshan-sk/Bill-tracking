@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Bill Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #444;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            border-bottom: 2px solid #ddd;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(odd) {
+            background-color: #e0f7fa;
+        }
+        tr:hover {
+            background-color: #c8e6c9;
+        }
+        .button {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 14px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 5px;
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+        .add-button {
+            background-color: #28a745;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .logout-button {
+            background-color: #ff0000;
+        }
+        .logout-button:hover {
+            background-color: #cc0000;
+        }
+        .created_at {
+            font-size: 12px;
+            color: #888;
+        }
+        .icon-button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 8px;
+        }
+        .icon-button:last-child {
+            margin-right: 0;
+        }
+        .icon-button:hover {
+            opacity: 0.8;
+        }
+        .edit-icon {
+            color: #000;
+        }
+        .delete-icon {
+            color: #ff0000;
+        }
+        .hidden {
+            display: none;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 100px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the tooltip element */
+            left: 50%;
+            margin-left: -50px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .item-tooltip .tooltiptext {
+            width: auto;
+            white-space: nowrap;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a {
+            color: #007bff;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+        .pagination a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .current {
+            background-color: #007bff;
+            color: white;
+        }
+        .month-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 16px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .month-header:hover {
+            background-color: #e0e0e0;
+        }
+        .month-header h4 {
+            margin: 0;
+        }
+        .month-items {
+            /* Display none by default */
+            display: none;
+            padding-left: 20px;
+        }
+        .month-items.active {
+            display: block; /* Show when active */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        function toggleActions() {
+            var actionsColumn = document.querySelectorAll('.actions');
+            for (var i = 0; i < actionsColumn.length; i++) {
+                actionsColumn[i].classList.toggle('hidden');
+            }
+        }
+
+        function toggleMonth(month) {
+            var monthItems = document.getElementById('month-' + month);
+            var allMonthItems = document.querySelectorAll('.month-items');
+
+            // Toggle the clicked month
+            monthItems.classList.toggle('active');
+
+            // Close all other months
+            for (var i = 0; i < allMonthItems.length; i++) {
+                if (allMonthItems[i] !== monthItems) {
+                    allMonthItems[i].classList.remove('active');
+                }
+            }
+        }
+
+        // Function to expand current month by default on page load
+        function expandCurrentMonth() {
+            // Get the current month header and items
+            var currentMonthHeader = document.querySelector('.month-container:first-of-type .month-header');
+            var currentMonthItems = document.querySelector('.month-container:first-of-type .month-items');
+
+            // Add 'active' class to show current month items
+            currentMonthHeader.classList.add('active');
+            currentMonthItems.classList.add('active');
+        }
+
+        // Call expandCurrentMonth on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            expandCurrentMonth();
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h2>Home - Bill Tracker</h2>
+        <a href="{% url 'logout' %}" class="button logout-button">Logout</a>
+    </div>
+    <p>Welcome, {{ request.user.username }}</p>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0;">Bill of Items</h3>
+        <div>
+            <div class="tooltip">
+                <a href="{% url 'bill_create' %}" class="button add-button">+</a>
+                <span class="tooltiptext">Add Item</span>
+            </div>
+            <div class="tooltip">
+                <button onclick="toggleActions()" class="button add-button">Edit</button>
+                <span class="tooltiptext">Edit items</span>
+            </div>
+        </div>
+    </div>
+    
+    {% regroup bills by created_at|date:"F Y" as bills_by_month %}
+    
+    {% for month in bills_by_month reversed %} {# Reversed order here #}
+        <div class="month-container">
+            <div class="month-header" onclick="toggleMonth('{{ month.grouper }}')">
+                <h4>{{ month.grouper }}</h4>
+                <span>&#9660;</span>
+            </div>
+            <div class="month-items" id="month-{{ month.grouper }}">
+                <table>
+                    <thead>
+                        <tr>
+                            <!-- <th class="sl-no"></th> -->
+                            <th>Item Details</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th class="actions hidden">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in month.list %}
+                            <tr>            
+                                <!-- <td>{{ forloop.parentloop.counter0|add:1 }}</td> Adjusted to correctly display serial numbers -->
+                                <td>
+                                    <div class="tooltip item-tooltip">
+                                        <strong>{{ item.name_of_item }}</strong>
+                                        <span class="tooltiptext">{{ item.name_of_item }}</span>
+                                        <br>
+                                        <span class="created_at">{{ item.created_at }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ item.description }}</td>
+                                <td>{{ item.price }}</td>
+                                <td class="actions hidden">
+                                    <a href="{% url 'bill_update' item.id %}" class="icon-button"><i class="fas fa-pencil-alt edit-icon"></i></a>
+                                    <a href="{% url 'bill_delete' item.id %}" class="icon-button"><i class="fas fa-trash delete-icon"></i></a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5">No items found for this month.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if bills.has_other_pages %}
+    <div class="pagination">
+        {% if bills.has_previous %}
+        <a href="?page=1">&laquo; First</a>
+        <a href="?page={{ bills.previous_page_number }}">Previous</a>
+        {% endif %}
+        
+        {% for i in bills.paginator.page_range %}
+            {% if bills.number == i %}
+                <a href="?page={{ i }}" class="current">{{ i }}</a>
+            {% else %}
+                <a href="?page={{ i }}">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if bills.has_next %}
+        <a href="?page={{ bills.next_page_number }}">Next</a>
+        <a href="?page={{ bills.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
