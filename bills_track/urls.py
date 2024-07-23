@@ -7,4 +7,5 @@ urlpatterns = [
     path('bills/<int:pk>/update/', views.bill_update_view, name='bill_update'),
     path('bills/<int:pk>/delete/', views.bill_delete_view, name='bill_delete'),
     # path('download-pdf/', views.download_pdf, name='download_pdf'),
+    path('bills/calculate_bill/', views.calculate_bill, name='calculate_bill'),
 ]

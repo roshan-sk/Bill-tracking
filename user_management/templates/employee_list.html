@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Employee List{% endblock %}
+
+{% block content %}
+<h1 class="my-4">Employees Database</h1>
+
+<!-- Container for Add and Download Buttons, positioned at top-right -->
+<div class="d-flex justify-content-end mb-3">
+    <!-- Add Employee Button with Tooltip -->
+    <a href="{% url 'employee_create' %}" class="btn btn-primary rounded-circle mr-2" data-toggle="tooltip" data-placement="top" title="Add Employee" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-plus"></i>
+    </a>
+
+    <!-- Download PDF Button with Tooltip -->
+    <button class="btn btn-secondary rounded-circle" id="download-pdf" data-toggle="tooltip" data-placement="top" title="Download PDF" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-download"></i>
+    </button>
+</div>
+
+<!-- PDF Content with Title -->
+<div id="pdf-content">
+    <h2 class="text-center">Employees List</h2> <!-- Title for the PDF -->
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Qualification</th>
+                <th>Salary</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>
+                    <div>
+                        <strong>{{ employee.emp_name }}</strong>
+                        <div class="text-muted">{{ employee.employee_email }}</div>
+                    </div>
+                </td>
+                <td>{{ employee.get_emp_designation_display }}</td>
+                <td>{{ employee.emp_qualification }}</td>
+                <td>{{ employee.emp_salary }}/-</td>
+                <td>{{ employee.get_status_display }}</td>
+                <td>
+                    <a href="{% url 'employee_update' employee.pk %}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-sm btn-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Enable tooltips -->
+<script>
+document.getElementById('download-pdf').addEventListener('click', function() {
+    // Hide buttons while generating PDF
+    this.style.display = 'none';
+    document.querySelector('.btn-primary').style.display = 'none';
+    document.querySelectorAll('.btn-warning, .btn-danger').forEach(btn => btn.style.display = 'none');
+    
+    // Hide the Actions column
+    var actionsColumn = document.querySelectorAll('table th:last-child, table td:last-child');
+    actionsColumn.forEach(col => col.style.display = 'none');
+    
+    // Use html2pdf.js to generate PDF
+    var element = document.getElementById('pdf-content');  // Target the content including the title
+    html2pdf().from(element).save('employee_list.pdf').then(() => {
+        // Restore button visibility after PDF is generated
+        this.style.display = 'block';
+        document.querySelector('.btn-primary').style.display = 'block';
+        document.querySelectorAll('.btn-warning, .btn-danger').forEach(btn => btn.style.display = 'block');
+        
+        // Restore the Actions column
+        actionsColumn.forEach(col => col.style.display = '');
+        
+        // Refresh the page
+        window.location.reload();
+    }).catch(err => {
+        console.error('Error generating PDF:', err);
+        // Restore button visibility on error
+        this.style.display = 'block';
+        document.querySelector('.btn-primary').style.display = 'block';
+        document.querySelectorAll('.btn-warning, .btn-danger').forEach(btn => btn.style.display = 'block');
+        
+        // Restore the Actions column on error
+        actionsColumn.forEach(col => col.style.display = '');
+    });
+});
+</script>
+    
+        
+<!-- Include html2pdf.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+{% endblock %}

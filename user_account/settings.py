@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "account",
     "products",
     "bills_track",
+    "user_management",
 ]
 
 MIDDLEWARE = [

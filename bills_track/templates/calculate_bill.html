@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Bill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9ecef;
+            color: #495057;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .form-container h2 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 24px;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-container form label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-container form select {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        .form-container form button {
+            padding: 12px 20px;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .form-container form button:hover {
+            background-color: #218838;
+        }
+        .total-amount {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .no-bills-message, .future-month-error {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .no-bills-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .future-month-error {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Select Month and Year</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Calculate Total</button>
+        </form>
+        {% if future_month_error %}
+        <div class="future-month-error">
+            {{ future_month_error }}
+        </div>
+        {% elif no_bills_message %}
+        <div class="no-bills-message">
+            {{ no_bills_message }}
+        </div>
+        {% elif total_price is not None %}
+        <div class="total-amount">
+            Total Price {{ total_price }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
